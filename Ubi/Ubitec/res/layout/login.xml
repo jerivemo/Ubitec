@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+ 
+	<ImageView
+				    android:id="@+id/imageNCQ"
+				    android:layout_width="100dp"
+				    android:layout_height="100dp"
+				    android:src="@drawable/icono"
+				    android:layout_marginTop="30dp"
+				    android:layout_centerHorizontal="true"/>
+				
+				<ProgressBar
+				    android:id="@+id/progressBarLog"
+				    style="?android:attr/progressBarStyleHorizontal"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_below="@+id/imageNCQ"
+				    android:layout_marginTop="15dp"/>
+				<EditText
+				    android:id="@+id/edtUser"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_below="@+id/progressBarLog"
+				    android:layout_centerHorizontal="true"
+				    android:layout_marginTop="15dp"
+				    android:textSize="25sp"
+				    android:ems="10"
+				    android:inputType="textPersonName"
+				    android:hint="Usuario"/>
+			
+				<EditText
+				     android:layout_marginTop="20dp"
+				    android:id="@+id/edtPassword"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_below="@+id/edtUser"
+				    android:textSize="25sp"
+				    android:ems="10"
+				    android:layout_centerHorizontal="true"
+				    android:inputType="textPassword"
+				    android:hint="Contraseña"/>
+			
+				<Button
+				    android:id="@+id/btnlogin"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_below="@+id/edtPassword"
+				    android:layout_centerHorizontal="true"
+				    android:layout_marginTop="15dp"
+				    android:textSize="25sp"
+				    android:onClick="login"
+				    android:text="Ingresar"
+				    />
+    	   	
+
+
+></RelativeLayout>			
+				
+		
+</ScrollView>
+		  
+
+
