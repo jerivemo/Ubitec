@@ -66,7 +66,8 @@ public class Login extends Activity {
 		        startActivity(i);//Ejecutamos la actividad para que muestre la segunda actividad
 	       
 	    }
-	    private boolean log(String user, String pass)
+
+	private boolean log(String user, String pass)
 	   	{
 	           ProgressBar Progress= (ProgressBar) findViewById(R.id.progressBarLog);
 	   		

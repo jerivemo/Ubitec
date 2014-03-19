@@ -6,41 +6,29 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
->
+        android:layout_height="fill_parent"
+        android:background="@drawable/fondohome" >
 
-  	<ImageView
-        android:id="@+id/imagenLogin"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
-        android:src="@drawable/icono"
-        android:scaleType="centerCrop"
-	 />
+        <ImageView
+            android:id="@+id/imagenLogin"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icono" />
 
-  	<TextView
-  	    android:id="@+id/textView1"
-  	    android:layout_width="wrap_content"
-  	    android:layout_height="wrap_content"
-  	    android:textSize="25dp"
-  	    android:layout_below="@+id/imagenLogin"
-  	    android:layout_centerHorizontal="true"
-  	    android:layout_centerVertical="true"
-  	    android:text="No hay cliente definido"
-  	    android:textAppearance="?android:attr/textAppearanceMedium" />
-		<Button
-				    android:id="@+id/botonPrueba"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_below="@+id/textView1"
-				    android:layout_centerHorizontal="true"
-				    android:layout_marginTop="15dp"
-				    android:textSize="25sp"
-				    android:onClick="SeleccionarCompania"
-				    android:text="BotonPrueba"
-				    />
+        <TextView
+            android:id="@+id/Cliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagenLogin"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="No hay cliente definido"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="25dp" />
     </RelativeLayout>
 
 </ScrollView>
