@@ -70,6 +70,23 @@ public class WebService {
 
 
 	/**
+	* Query web service for login activity 
+	* @param name user name
+	* @param password user password
+	* @return xml result, user profile details or error in login
+	*/
+	public String cargarCompaniasFiltro(String name,String password, String placa, String companie){
+	crearSoap("cargarCompaniasFiltro"); // request LoginXML
+	request.addProperty("pUsuario",name); //add user name to xml
+	request.addProperty("pClave",password); // add password to xml
+	request.addProperty("pPlaca",placa); //add placa name to xml
+	request.addProperty("pCompania",companie); //add user name to xml
+	String resultado=conexion_aux(); 
+	return resultado;
+	}
+
+
+	/**
 	* send the request to web service in hopes get a answer
 	* we will communicate through SOAP protocol
 	* @return xml result

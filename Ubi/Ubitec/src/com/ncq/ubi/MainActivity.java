@@ -1,19 +1,37 @@
 package com.ncq.ubi;
 
 
+import java.io.StringReader;
 import java.util.ArrayList;
 
 
 
+
+
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import com.ncq.ubi.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -22,12 +40,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-
+import android.widget.EditText;
 import android.widget.ListView;
-
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	@SuppressLint("NewApi")
 	    private String[] titulos;
 	    private DrawerLayout NavDrawerLayout;
 	    private ListView NavList;
@@ -37,8 +56,13 @@ public class MainActivity extends Activity {
 	    private CharSequence mDrawerTitle;
 	    private CharSequence mTitle;
 	    NavigationAdapter NavAdapter;  
+		
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		  StrictMode.setThreadPolicy(policy);
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.main);		
 
@@ -177,5 +201,88 @@ public class MainActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);}
+    
+    public void SeleccionarCompania(View v)
+    {
+    //	EditText edtUser = (EditText)findViewById(R.id.edtUser);
+      //  EditText edtPass = (EditText)findViewById(R.id.edtPassword);
+    	Boolean flag = filtroCompania("proyecto","12345","Proyecto-01","");
+    	if (flag == true)
+    	{
+            Toast.makeText(getApplicationContext(),
+						"Usuario Y Contraseña Correctos",
+						Toast.LENGTH_LONG).show();
+    	}
+    }
+       
+    
+    private boolean filtroCompania(String user, String pass, String placa, String compa)
+   	{
+   		WebService ncqtrack = new WebService();
+           
+             
+             String resultado = ncqtrack.cargarCompaniasFiltro(user, pass, placa, compa); // connection result  
+             
+   		//String resultado = ncqtrack.Login("proyecto","12345"); // connection result
+   		if (resultado.equals("No hubo conexi—n")) {
+   			Toast.makeText(getApplicationContext(), "No hubo conexión", 
+   					Toast.LENGTH_LONG).show(); // Connection failed
+   					return false;
+   		}
+   		else {
+
+	    	
+   						
+   			boolean validate = false;
+   			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+   			dbf.setValidating(validate);
+   			dbf.setNamespaceAware(true);
+   			dbf.setIgnoringElementContentWhitespace(true);
+   			Document document = null;
+   			
+   			try {
+   				
+   				// delete garbage in the web service response like "[" or "]" 
+   				if( (resultado.substring(0,1)).equals("[") && 
+   						resultado.substring(resultado.length()-1,resultado.length()).equals("]")){
+   					if(resultado.substring(resultado.length()-12, resultado.length()).equals(", anyType{}]")){
+   						resultado=resultado.substring(1,resultado.length()-12);
+   					} else{
+   						resultado=resultado.substring(1,resultado.length()-1);
+   					}
+   				}
+   											
+   				DocumentBuilder builder = dbf.newDocumentBuilder();
+   				document = builder.parse(new InputSource(
+   				new StringReader(resultado)));//leer XML
+   				NodeList nodeList = document.getElementsByTagName("Respuesta");
+   			    
+   				String respuesta = nodeList.item(0).getTextContent();
+   				if (respuesta.compareTo("N")==0) {
+   					nodeList = document.getElementsByTagName("datos");
+   					Toast.makeText(getApplicationContext(),resultado,
+   							Toast.LENGTH_LONG).show();
+   					return true;
+   					
+   					
+   				}else if (respuesta.compareTo("S")==0)
+   				{
+   					nodeList = document.getElementsByTagName("Detalle");
+   					Toast.makeText(getApplicationContext(),
+   							nodeList.item(0).getTextContent(),
+   							Toast.LENGTH_LONG).show();
+   					return false;
+   				}
+   						
+   			} catch (Exception e) {
+   				Toast.makeText(getApplicationContext(), e.toString(),
+   						Toast.LENGTH_LONG).show();
+   				return false;
+   				
+   			}
+   		
+   		}
+   		return false;
+   	}
     
 }
