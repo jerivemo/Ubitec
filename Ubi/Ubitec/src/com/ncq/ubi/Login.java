@@ -41,7 +41,6 @@ public class Login extends Activity {
 	 
 	    }
 	
-	
 	    public void login(View v)
 	    {
 	    	EditText edtUser = (EditText)findViewById(R.id.edtUser);

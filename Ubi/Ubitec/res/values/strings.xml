@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Ubitec</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_search">buscar</string>
-    <!-- Lista de titulos de navegacion-->    
+    <!-- Lista de titulos de navegacion -->
     <string-array name="nav_options">
         <item>Inicio</item>
-        <item>LogOut</item>
         <item>Vehiculos</item>
         <item>Linea</item>
         <item>GPS</item>
+        <item>LogOut</item>
     </string-array>
-    <!-- Lista de iconos de navegacion-->
+    <!-- Lista de iconos de navegacion -->
     <array name="navigation_iconos">
         <item>@drawable/ic_action_home</item>
-        <item>@drawable/ic_action_user</item>
-        <item>@drawable/ic_action_star</item>
         <item>@drawable/ic_action_event</item>
-        <item>@drawable/ic_action_place</item>      
-    </array>  
-</resources>
+        <item>@drawable/ic_action_star</item>
+        <item>@drawable/ic_action_place</item>
+        <item>@drawable/ic_action_user</item>
+    </array>
 
+</resources>

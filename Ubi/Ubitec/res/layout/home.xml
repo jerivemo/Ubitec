@@ -29,6 +29,7 @@
             android:text="No hay cliente definido"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="25dp" />
+        
     </RelativeLayout>
 
 </ScrollView>

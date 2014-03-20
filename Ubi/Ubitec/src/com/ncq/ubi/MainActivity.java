@@ -2,19 +2,17 @@ package com.ncq.ubi;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
 import com.ncq.ubi.R;
-
 import android.R.string;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
@@ -27,14 +25,18 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -45,7 +47,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
-public class MainActivity extends Activity implements OnQueryTextListener {
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+public class MainActivity extends Activity implements OnQueryTextListener,OnActionExpandListener, android.support.v4.view.MenuItemCompat.OnActionExpandListener{
 	@SuppressLint("NewApi")
 	private String[] titulos;
 	private DrawerLayout NavDrawerLayout;
@@ -149,8 +152,9 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		case 1:
 			fragment = new HomeFragment();
 			break;
-		case 2:
-			fragment = new ProfileFragment();
+		case 5:
+			logOut();
+			
 			break;
 
 		default:
@@ -180,6 +184,7 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 			Log.e("Error  ", "MostrarFragment" + position);
 		}
 	}
+	
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -201,13 +206,30 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			Log.e("mDrawerToggle pushed", "x");
 
+			
 			return true;
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
-
+public void seleccion ()
+{// Created a new Dialog
+	Dialog dialog = new Dialog(this);
+	 
+	// Set the title
+	dialog.setTitle("Dialog Title");
+	 
+	// inflate the layout
+//	dialog.setContentView(R.layout.busqueda_cliente);
+	 
+	 
+	// Display the dialog
+	dialog.show();
+	
+	}
 	private SearchView mSearchView;
 
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -215,21 +237,27 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		inflater.inflate(R.menu.main, menu);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);
+		
+		MenuItemCompat.setOnActionExpandListener(searchItem, this);
 		mSearchView = (SearchView) searchItem.getActionView();
 		mSearchView.setQueryHint("Search…");
 		mSearchView.setOnQueryTextListener(this);
 		return true;
 	}
 
+		
+	
+	
 	@Override
 	public boolean onQueryTextSubmit(String text) {
 
 		Toast.makeText(this, "Searching for " + text, Toast.LENGTH_LONG).show();
 		SeleccionarCompaniaPorPlaca(text);
+		//seleccion();
 
 		return false;
 	}
-
+	
 	public void SeleccionarCompaniaPorPlaca(String placa) {
 		SharedPreferences prefe = getSharedPreferences("datosUsuario",
 				Context.MODE_PRIVATE);
@@ -316,9 +344,33 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		return false;
 	}
 
+	public void logOut()
+	{
+		 Context contexto = this.getApplicationContext();
+		   SharedPreferences sp = contexto.getSharedPreferences("datosUsuario", Context.MODE_PRIVATE);
+		   sp.edit().clear().commit();
+		   Intent i = new Intent(this, Login.class);//Creamos un nuevo intent para llamar a la siguiente actividad
+		   startActivity(i);//Ejecutamos la actividad para que muestre la segunda actividad
+		       
+		   
+	}
+
 	@Override
 	public boolean onQueryTextChange(String newText) {
+		return false;
+	}
+
+	@Override
+	public boolean onMenuItemActionCollapse(MenuItem item) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean onMenuItemActionExpand(MenuItem item) {
+		Toast.makeText(getApplicationContext(),"hola",
+				Toast.LENGTH_LONG).show();
+		return false;
+	}
+	
 }
