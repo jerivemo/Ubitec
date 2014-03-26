@@ -3,12 +3,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@drawable/fondohome">
 
 <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-    android:background="@drawable/fondohome">
+    >
  
 	<ImageView
 				    android:id="@+id/imageNCQ"
@@ -63,7 +63,7 @@
     	   	
 
 
-></RelativeLayout>			
+</RelativeLayout>			
 				
 		
 </ScrollView>

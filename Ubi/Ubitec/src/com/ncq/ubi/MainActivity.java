@@ -47,6 +47,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -233,6 +234,10 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
+		if(item.getItemId()==R.id.action_search)
+		{
+			NavDrawerLayout.openDrawer(NavDrawerLayout.findViewById(R.id.tab));
+		}
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			Log.e("mDrawerToggle pushed", "x");
 
@@ -255,8 +260,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 	}
 
-	private SearchView mSearchView;
-
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,21 +267,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
 
-		MenuItem searchItem = menu.findItem(R.id.action_search);
-	    MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
-	        @Override
-	        public boolean onMenuItemActionCollapse(MenuItem item) {
-	            return true;  // Return true to collapse action view
-	        }
-
-	        @Override
-	        public boolean onMenuItemActionExpand(MenuItem item) {
-	            return true;  // Return true to expand action view
-	        }
-	    });
-		mSearchView = (SearchView) searchItem.getActionView();
-		mSearchView.setQueryHint("Search…");
-		mSearchView.setOnQueryTextListener(this);
 		return true;
 	}
 
