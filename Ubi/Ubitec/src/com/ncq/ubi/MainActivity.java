@@ -35,10 +35,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.MenuItemCompat;
-<<<<<<< HEAD
-=======
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
->>>>>>> origin/Ricardo
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -81,12 +78,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 		// Drawer Layout
 		NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-<<<<<<< HEAD
-
-		// Lista
-=======
-			// Lista
->>>>>>> origin/Ricardo
 		NavList = (ListView) findViewById(R.id.lista);
 		// Declaramos el header el cual sera el layout de header.xml
 		View header = getLayoutInflater().inflate(R.layout.header, null);
@@ -247,11 +238,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 			return true;
 		}
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> origin/Ricardo
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -279,43 +265,17 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		inflater.inflate(R.menu.main, menu);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);
-<<<<<<< HEAD
-
-		MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
-			
-			@Override
-			public boolean onMenuItemActionExpand(MenuItem arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public boolean onMenuItemActionCollapse(MenuItem arg0) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
-=======
 	    MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
 	        @Override
 	        public boolean onMenuItemActionCollapse(MenuItem item) {
-	        	Fragment fragment = new HomeFragment();
-	    		FragmentManager fragmentManager = getFragmentManager();
-	    		fragmentManager.beginTransaction()
-	    				.replace(R.id.content_frame, fragment).commit();
 	            return true;  // Return true to collapse action view
 	        }
 
 	        @Override
 	        public boolean onMenuItemActionExpand(MenuItem item) {
-	        	Fragment fragment = new ProfileFragment();
-	    		FragmentManager fragmentManager = getFragmentManager();
-	    		fragmentManager.beginTransaction()
-	    				.replace(R.id.content_frame, fragment).commit();
 	            return true;  // Return true to expand action view
 	        }
 	    });
->>>>>>> origin/Ricardo
 		mSearchView = (SearchView) searchItem.getActionView();
 		mSearchView.setQueryHint("Search…");
 		mSearchView.setOnQueryTextListener(this);
@@ -434,10 +394,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 	@Override
 	public boolean onQueryTextChange(String newText) {
-<<<<<<< HEAD
-=======
-		
->>>>>>> origin/Ricardo
 		return false;
 	}
 
