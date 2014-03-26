@@ -2,12 +2,16 @@ package com.ncq.ubi;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 import com.ncq.ubi.R;
+
 import android.R.string;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -22,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
@@ -35,7 +40,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.OnActionExpandListener;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,22 +49,23 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class MainActivity extends Activity implements OnQueryTextListener,OnActionExpandListener, android.support.v4.view.MenuItemCompat.OnActionExpandListener{
+public class MainActivity extends Activity implements OnQueryTextListener {
 	@SuppressLint("NewApi")
 	private String[] titulos;
 	private DrawerLayout NavDrawerLayout;
 	private ListView NavList;
 	private ArrayList<Item_objct> NavItms;
 	private TypedArray NavIcons;
-	private ActionBarDrawerToggle mDrawerToggle;
+	private ActionBarDrawerToggle mDrawerToggle, mDrawerToggle2;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
-	NavigationAdapter NavAdapter;
+	NavigationAdapter NavAdapter, NavAdapter2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,7 @@ public class MainActivity extends Activity implements OnQueryTextListener,OnActi
 
 		// Drawer Layout
 		NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
 		// Lista
 		NavList = (ListView) findViewById(R.id.lista);
 		// Declaramos el header el cual sera el layout de header.xml
@@ -94,13 +102,31 @@ public class MainActivity extends Activity implements OnQueryTextListener,OnActi
 		NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
 		// Etiquetas
 		NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
-
 		// Declaramos y seteamos nuestro adaptador al cual le pasamos el array
 		// con los titulos
 		NavAdapter = new NavigationAdapter(this, NavItms);
 		NavList.setAdapter(NavAdapter);
 		// Siempre vamos a mostrar el mismo titulo
 		mTitle = mDrawerTitle = getTitle();
+
+		Resources res = getResources();
+
+		TabHost tabs = (TabHost) findViewById(android.R.id.tabhost);
+		tabs.setup();
+
+		TabHost.TabSpec spec = tabs.newTabSpec("mitab1");
+		spec.setContent(R.id.tab1);
+		spec.setIndicator("Placa",
+				res.getDrawable(android.R.drawable.ic_dialog_map));
+		tabs.addTab(spec);
+
+		spec = tabs.newTabSpec("mitab2");
+		spec.setContent(R.id.tab2);
+		spec.setIndicator("Descripción",
+				res.getDrawable(android.R.drawable.ic_dialog_map));
+		tabs.addTab(spec);
+
+		tabs.setCurrentTab(0);
 
 		// Declaramos el mDrawerToggle y las imgs a utilizar
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -154,7 +180,7 @@ public class MainActivity extends Activity implements OnQueryTextListener,OnActi
 			break;
 		case 5:
 			logOut();
-			
+
 			break;
 
 		default:
@@ -184,7 +210,6 @@ public class MainActivity extends Activity implements OnQueryTextListener,OnActi
 			Log.e("Error  ", "MostrarFragment" + position);
 		}
 	}
-	
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -206,27 +231,26 @@ public class MainActivity extends Activity implements OnQueryTextListener,OnActi
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			Log.e("mDrawerToggle pushed", "x");
 
-			
 			return true;
 		}
-		
+
 		return super.onOptionsItemSelected(item);
 	}
-public void seleccion ()
-{// Created a new Dialog
-	Dialog dialog = new Dialog(this);
-	 
-	// Set the title
-	dialog.setTitle("Dialog Title");
-	 
-	// inflate the layout
-//	dialog.setContentView(R.layout.busqueda_cliente);
-	 
-	 
-	// Display the dialog
-	dialog.show();
-	
+
+	public void seleccion() {// Created a new Dialog
+		Dialog dialog = new Dialog(this);
+
+		// Set the title
+		dialog.setTitle("Dialog Title");
+
+		// inflate the layout
+		// dialog.setContentView(R.layout.busqueda_cliente);
+
+		// Display the dialog
+		dialog.show();
+
 	}
+
 	private SearchView mSearchView;
 
 	@SuppressLint("NewApi")
@@ -237,27 +261,37 @@ public void seleccion ()
 		inflater.inflate(R.menu.main, menu);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);
-		
-		MenuItemCompat.setOnActionExpandListener(searchItem, this);
+
+		MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+			
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 		mSearchView = (SearchView) searchItem.getActionView();
 		mSearchView.setQueryHint("Search…");
 		mSearchView.setOnQueryTextListener(this);
 		return true;
 	}
 
-		
-	
-	
 	@Override
 	public boolean onQueryTextSubmit(String text) {
 
 		Toast.makeText(this, "Searching for " + text, Toast.LENGTH_LONG).show();
 		SeleccionarCompaniaPorPlaca(text);
-		//seleccion();
+		// seleccion();
 
 		return false;
 	}
-	
+
 	public void SeleccionarCompaniaPorPlaca(String placa) {
 		SharedPreferences prefe = getSharedPreferences("datosUsuario",
 				Context.MODE_PRIVATE);
@@ -317,12 +351,13 @@ public void seleccion ()
 				String respuesta = nodeList.item(0).getTextContent();
 				if (respuesta.compareTo("N") == 0) {
 					nodeList = document.getElementsByTagName("Companias");
-					String datos= nodeList.item(0).getTextContent();
+					String datos = nodeList.item(0).getTextContent();
 					Toast.makeText(getApplicationContext(), resultado,
 							Toast.LENGTH_LONG).show();
-				
-					TextView clien= (TextView)findViewById(R.id.Cliente);
-					clien.setText(datos);;
+
+					TextView clien = (TextView) findViewById(R.id.Cliente);
+					clien.setText(datos);
+					;
 					return true;
 
 				} else if (respuesta.compareTo("S") == 0) {
@@ -344,15 +379,17 @@ public void seleccion ()
 		return false;
 	}
 
-	public void logOut()
-	{
-		 Context contexto = this.getApplicationContext();
-		   SharedPreferences sp = contexto.getSharedPreferences("datosUsuario", Context.MODE_PRIVATE);
-		   sp.edit().clear().commit();
-		   Intent i = new Intent(this, Login.class);//Creamos un nuevo intent para llamar a la siguiente actividad
-		   startActivity(i);//Ejecutamos la actividad para que muestre la segunda actividad
-		       
-		   
+	public void logOut() {
+		Context contexto = this.getApplicationContext();
+		SharedPreferences sp = contexto.getSharedPreferences("datosUsuario",
+				Context.MODE_PRIVATE);
+		sp.edit().clear().commit();
+		Intent i = new Intent(this, Login.class);// Creamos un nuevo intent para
+													// llamar a la siguiente
+													// actividad
+		startActivity(i);// Ejecutamos la actividad para que muestre la segunda
+							// actividad
+
 	}
 
 	@Override
@@ -360,17 +397,4 @@ public void seleccion ()
 		return false;
 	}
 
-	@Override
-	public boolean onMenuItemActionCollapse(MenuItem item) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onMenuItemActionExpand(MenuItem item) {
-		Toast.makeText(getApplicationContext(),"hola",
-				Toast.LENGTH_LONG).show();
-		return false;
-	}
-	
 }
