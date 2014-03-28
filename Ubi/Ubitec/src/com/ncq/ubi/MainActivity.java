@@ -7,6 +7,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -43,15 +44,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
@@ -64,10 +69,11 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	private ListView NavList;
 	private ArrayList<Item_objct> NavItms;
 	private TypedArray NavIcons;
-	private ActionBarDrawerToggle mDrawerToggle, mDrawerToggle2;
+	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	NavigationAdapter NavAdapter, NavAdapter2;
+	ArrayList<String> listNombComp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +133,7 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		tabs.addTab(spec);
 
 		tabs.setCurrentTab(0);
+		tabs.setOnTabChangedListener(ontabCompchange);
 
 		// Declaramos el mDrawerToggle y las imgs a utilizar
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -147,10 +154,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 			}
 		};
 		
-		
-		
-		
-
 		// Establecemos que mDrawerToggle declarado anteriormente sea el
 		// DrawerListener
 		NavDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -168,7 +171,11 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 				MostrarFragment(position);
 			}
 		});
-
+        
+		EditText edtBusquedaComp = (EditText)NavDrawerLayout.findViewById(R.id.textoBusquedaComp);
+		edtBusquedaComp.addTextChangedListener(filtroCompañias);
+		
+		
 		// Cuando la aplicacion cargue por defecto mostrar la opcion Home
 		MostrarFragment(1);
 	}
@@ -246,20 +253,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void seleccion() {// Created a new Dialog
-		Dialog dialog = new Dialog(this);
-
-		// Set the title
-		dialog.setTitle("Dialog Title");
-
-		// inflate the layout
-		// dialog.setContentView(R.layout.busqueda_cliente);
-
-		// Display the dialog
-		dialog.show();
-
-	}
-
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,40 +265,47 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 	@Override
 	public boolean onQueryTextSubmit(String text) {
-
-		Toast.makeText(this, "Searching for " + text, Toast.LENGTH_LONG).show();
-		SeleccionarCompaniaPorPlaca(text);
-		// seleccion();
-
 		return false;
-	}
 
-	public void SeleccionarCompaniaPorPlaca(String placa) {
+	}
+    
+	/*
+	 * Obtener Nombre de Compañias del web service 
+	 */
+	public void ObtenerCompanias(String datos, int tipo) {
 		SharedPreferences prefe = getSharedPreferences("datosUsuario",
 				Context.MODE_PRIVATE);
 		String usuario = prefe.getString("usuario", "");
 		String clave = prefe.getString("clave", "");
-
-		Boolean flag = filtroCompania(usuario, clave, placa, "");
-		if (flag == true) {
-			Toast.makeText(getApplicationContext(),
-					"Usuario Y Contraseña Correctos", Toast.LENGTH_LONG).show();
+		ArrayList<String> listComp;
+		if(tipo==0)
+		{
+			//Filtro po Placa
+			listComp=filtroCompania(usuario, clave, datos, "");
+			CargarCompañias(listComp,0);			
+		}else if(tipo==1)
+		{
+			//Filtro po Descripcion
+			listComp=filtroCompania(usuario, clave,"",datos);
+			CargarCompañias(listComp,1);
 		}
+		
 	}
 
-	private boolean filtroCompania(String user, String pass, String placa,
+	public ArrayList<String> filtroCompania(String user, String pass, String placa,
 			String compa) {
+		
+		ArrayList<String> listComp = new ArrayList<String>();
+		listNombComp = new ArrayList<String>();
+	
 		WebService ncqtrack = new WebService();
 
-		String resultado = ncqtrack.cargarCompaniasFiltro(user, pass, placa,
-				compa); // connection result
+		String resultado = ncqtrack.cargarCompaniasFiltro(user, pass, placa,compa); // connection result
 
-		// String resultado = ncqtrack.Login("proyecto","12345"); // connection
-		// result
 		if (resultado.equals("No hubo conexi—n")) {
 			Toast.makeText(getApplicationContext(), "No hubo conexión",
 					Toast.LENGTH_LONG).show(); // Connection failed
-			return false;
+			return listComp;
 		} else {
 
 			boolean validate = false;
@@ -339,32 +339,38 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 				String respuesta = nodeList.item(0).getTextContent();
 				if (respuesta.compareTo("N") == 0) {
 					nodeList = document.getElementsByTagName("Companias");
-					String datos = nodeList.item(0).getTextContent();
-					Toast.makeText(getApplicationContext(), resultado,
-							Toast.LENGTH_LONG).show();
-
-					TextView clien = (TextView) findViewById(R.id.Cliente);
-					clien.setText(datos);
-					;
-					return true;
+					for(int i =0;i<nodeList.getLength();i++)
+					{
+						Element nodo=(Element)nodeList.item(i);
+						NodeList nodeList2 = nodo.getElementsByTagName("NOMBRE_CLIENTE");
+						String datos = nodeList2.item(0).getTextContent();
+						listComp.add(datos);
+						nodeList2 = nodo.getElementsByTagName("COMPANIA");
+						datos = nodeList2.item(0).getTextContent();
+						listNombComp.add(datos);
+					}
+					
+					
+					
+					return listComp;
 
 				} else if (respuesta.compareTo("S") == 0) {
 					nodeList = document.getElementsByTagName("Detalle");
 					Toast.makeText(getApplicationContext(),
 							nodeList.item(0).getTextContent(),
 							Toast.LENGTH_LONG).show();
-					return false;
+					return listComp;
 				}
 
 			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), e.toString(),
-						Toast.LENGTH_LONG).show();
-				return false;
+				//Toast.makeText(getApplicationContext(), e.toString(),
+					//	Toast.LENGTH_LONG).show();
+				return listComp;
 
 			}
 
 		}
-		return false;
+		return listComp;
 	}
 
 	public void logOut() {
@@ -384,5 +390,57 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	public boolean onQueryTextChange(String newText) {
 		return false;
 	}
-
+    
+	
+	/*
+	 * Cargar Nombre de la compañia en listView para la selección
+	 */
+	public void CargarCompañias(ArrayList<String> compañias,int tipo)
+	{
+		ListView list;
+        ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,compañias);
+        if(tipo==0){
+        	list=(ListView)NavDrawerLayout.findViewById(R.id.listCompPlaca);
+        	list.setAdapter(adaptador);
+        }else if(tipo==1){
+        	list=(ListView)NavDrawerLayout.findViewById(R.id.listCompDescrip);
+        	list.setAdapter(adaptador);
+        }
+        
+	}
+	
+	 TextWatcher filtroCompañias = new TextWatcher() {
+		
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			EditText texto = (EditText)NavDrawerLayout.findViewById(R.id.textoBusquedaComp);
+			TabHost tabs = (TabHost)findViewById(android.R.id.tabhost);			
+			ObtenerCompanias(texto.getText().toString(),tabs.getCurrentTab());				
+		}
+		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
+	OnTabChangeListener ontabCompchange=new OnTabChangeListener() {
+		
+		@Override
+		public void onTabChanged(String tabId) {
+			EditText texto = (EditText)NavDrawerLayout.findViewById(R.id.textoBusquedaComp);
+			TabHost tabs = (TabHost)findViewById(android.R.id.tabhost);		
+			ObtenerCompanias(texto.getText().toString(),tabs.getCurrentTab());	
+			
+		}
+	};
+	
 }
