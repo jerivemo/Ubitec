@@ -75,6 +75,7 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	private CharSequence mTitle;
 	NavigationAdapter NavAdapter, NavAdapter2;
 	ArrayList<String> listNombComp;
+	private Boolean flagIsSelectedCompanie=false;
 
 	
 	@Override
@@ -84,6 +85,7 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		StrictMode.setThreadPolicy(policy);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 		// Drawer Layout
 		NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		NavList = (ListView) findViewById(R.id.lista);
@@ -168,7 +170,24 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long id) {
-				MostrarFragment(position);
+				if(position==5 || (flagIsSelectedCompanie==false && position==1))
+				{
+					MostrarFragment(position);
+					
+				}else if(flagIsSelectedCompanie==true && position==1)
+				{
+					informacionC= new InformacionComania();
+     				FragmentManager fragmentManager = getFragmentManager();
+					fragmentManager.beginTransaction()
+							.replace(R.id.content_frame, informacionC).commit();
+					NavDrawerLayout.closeDrawer(NavList);
+					
+				}else if(flagIsSelectedCompanie==false)
+				{
+					Toast.makeText(getApplicationContext(),"Opción no disponible",
+							Toast.LENGTH_SHORT).show();
+				}
+					
 			}
 		});
 
@@ -179,8 +198,13 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		
 		// Cuando la aplicacion cargue por defecto mostrar la opcion Home
 		MostrarFragment(1);
-
+    
+		//Metodos para setear funciones a onclik en listView de Compañias	
+		onclickListViewCompanias();
+		
 	}
+	
+	
 	int positionVentana;
 
 	/*
@@ -413,43 +437,11 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		if (tipo == 0) {
 			list = (ListView) NavDrawerLayout.findViewById(R.id.listCompPlaca);
 			list.setAdapter(adaptador);
-
-			list.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-		   				
-					cargarInfoCompania(listNombComp.get(arg2));
-					informacionC= new InformacionComania();
-					
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
-								.replace(R.id.content_frame, informacionC).commit();
-					
-				}
-			});
-
+         
 		} else if (tipo == 1) {
 			list = (ListView) NavDrawerLayout
 					.findViewById(R.id.listCompDescrip);
 			list.setAdapter(adaptador);
-
-			list.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					cargarInfoCompania(listNombComp.get(arg2));
-
-					informacionC= new InformacionComania();
-					
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
-								.replace(R.id.content_frame, informacionC).commit();
-				}
-			});
-
 		}
 
 	}
@@ -469,18 +461,20 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	    	Boolean flag = cargarCompaniasInformacion2(usuario,clave,compa);
     	if (flag == true)
     	{
+    		flagIsSelectedCompanie=true;
+    		
     	}
     }
 
 private boolean cargarCompaniasInformacion2(String user, String pass, String comp)
    	{
    		WebService ncqtrack = new WebService();
-           
+   		  
              
              String resultado = ncqtrack.cargarCompaniasInformacion(user,pass,comp); // connection result  
        
    		if (resultado.equals("No hubo conexi—n")) {
-   			Toast.makeText(getApplicationContext(), "No hubo conexión", 
+   			Toast.makeText(getApplicationContext(), "No hubo conexi—n" , 
    					Toast.LENGTH_LONG).show(); // Connection failed
    					return false;
    		}
@@ -511,11 +505,105 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
    				new StringReader(resultado)));//leer XML
    				NodeList nodeList = document.getElementsByTagName("Respuesta");
    				
-   				Toast.makeText(getApplicationContext(),
-							resultado,
-							Toast.LENGTH_LONG).show();
+   				Toast.makeText(getApplicationContext(),resultado, Toast.LENGTH_LONG).show();
    				String respuesta = nodeList.item(0).getTextContent();
    				if (respuesta.compareTo("N")==0) {
+   					//Codigo Cargar Informacion
+   					informacionC= new InformacionComania();
+   					
+   					FragmentManager fragmentManager = getFragmentManager();
+   					fragmentManager.beginTransaction()
+   							.replace(R.id.content_frame, informacionC).commit();
+   					
+   					TextView textview;
+   					String texto;
+   					try {
+   						nodeList = document.getElementsByTagName("COMPANIA");
+   						texto=nodeList.item(0).getTextContent();
+   						Toast.makeText(getApplicationContext(),texto, Toast.LENGTH_LONG).show();
+   						textview=(TextView)findViewById(R.id.codigoCompania);
+   						textview.setText("hola");
+					} catch (Exception e) {
+						
+					}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("NOMBRE_CLIENTE");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.nombreCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("DIRECCION_CONTACTO");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.direccionContacto);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("TELEFONO_CONTACTO");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.telefonoCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("MAIL_CONTACTO");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.emailCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("DESCRIPCION");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.descripcionCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("CLIENTE_QPOS");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.qposCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("NOTAS");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.notasCompania);
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					try {
+   						nodeList = document.getElementsByTagName("SERVICIO_SUSPENDIDO");
+   						texto=nodeList.item(0).getTextContent();
+   						textview=(TextView)findViewById(R.id.servicioSuspendidoCompania);
+   						if(texto.compareTo("N")==0)
+   						{
+   							textview.setText("SI");
+   							
+   							try {
+   		   						nodeList = document.getElementsByTagName("NOTAS_SERVICIO_SUSP");
+   		   						texto=nodeList.item(0).getTextContent();
+   		   						textview=(TextView)findViewById(R.id.notasSuspencionCompania);
+   		   						textview.setText(texto);
+   		   						textview.setVisibility(View.VISIBLE);
+   		   					    textview=(TextView)findViewById(R.id.compania10);
+   		   					    textview.setVisibility(View.VISIBLE);
+   							} catch (Exception e) {}
+   							
+   						}else if(texto.compareTo("S")==0)
+   						{
+   							textview.setText("NO");
+   						}
+   						
+   						textview.setText(texto);
+					} catch (Exception e) {}
+   					
+   					
    					
    					return true;
    					
@@ -540,15 +628,6 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
    	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	TextWatcher filtroCompañias = new TextWatcher() {
 
 		@Override
@@ -557,13 +636,9 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
 			EditText texto = (EditText) NavDrawerLayout
 					.findViewById(R.id.textoBusquedaComp);
 			TabHost tabs = (TabHost) findViewById(android.R.id.tabhost);
-			if(positionVentana==1){
 			ObtenerCompanias(texto.getText().toString(), tabs.getCurrentTab());
-			}
-			if(positionVentana==2)
-			{
-				
-			}
+			
+			
 			
 		}
 
@@ -592,5 +667,30 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
 
 		}
 	};
+
+	 //Metodo para setear funciones a onclik en listView de Compañias	
+	 public void onclickListViewCompanias()
+	 {
+		 ListView listview = (ListView) NavDrawerLayout.findViewById(R.id.listCompPlaca);
+		 listview.setOnItemClickListener(new OnItemClickListener() {
+	         public void onItemClick(AdapterView<?> arg0, View v,
+	                 int index, long arg3) {
+		   				
+					cargarInfoCompania(listNombComp.get(index));
+					
+		}});
+		 
+		 listview = (ListView) NavDrawerLayout
+					.findViewById(R.id.listCompDescrip);
+		 
+		 listview.setOnItemClickListener(new OnItemClickListener() {
+	            public void onItemClick(AdapterView<?> arg0, View v,
+	                    int index, long arg3) {
+					cargarInfoCompania(listNombComp.get(index));
+                    				
+				}
+			});
+		 
+	 }
 
 }

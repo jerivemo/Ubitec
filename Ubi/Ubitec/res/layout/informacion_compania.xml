@@ -3,52 +3,203 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/fondohome"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+     android:id="@+id/infoCompania">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/codigoCompania"
+            android:id="@+id/compania1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
-            android:text="Codigo Compañia"
+            android:text="Codigo Compañia:"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="20dp" />
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/codigoCompania"
+            android:layout_marginLeft="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania1"
+            android:text="Codigo"
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/InformacodigoCompania"
+            android:id="@+id/compania2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/codigoCompania"
-            android:layout_centerHorizontal="true"
-            android:text=".........."
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/NombreCompania"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/InformacodigoCompania"
-            android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
-            android:text="Nombre Compañia"
+            android:text="Nombre Cliente:"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="20dp" />
-
+            android:textSize="25sp" />
         <TextView
-            android:id="@+id/InformaNombreCompania"
+            android:id="@+id/nombreCompania"
+            android:layout_marginLeft="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/NombreCompania"
-            android:layout_centerHorizontal="true"
-            android:text=".........."
+            android:layout_below="@+id/compania2"
+            android:text="Nombre"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="15dp" />
+            android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/compania3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Dirección:"
+            android:layout_below="@+id/nombreCompania"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/direccionContacto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania3"
+            android:layout_marginLeft="60dp"
+            android:text="Dirección"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/compania4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/direccionContacto"
+            android:text="Teléfono"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/telefonoCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania4"
+            android:layout_marginLeft="60dp"
+            android:text="Teléfono"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/compania5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/telefonoCompania"
+            android:text="Email:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/emailCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania5"
+            android:layout_marginLeft="60dp"
+            android:text="Email"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+        
+        <TextView
+            android:id="@+id/compania6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/emailCompania"
+            android:text="Descripción:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/descripcionCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania6"
+            android:layout_marginLeft="60sp"
+            android:text="Descripción"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+                
+         <TextView
+            android:id="@+id/compania7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/descripcionCompania"
+            android:text="Cliente QPOS"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/qposCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania7"
+            android:layout_marginLeft="60dp"
+            android:text="QPOS"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/compania8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/qposCompania"
+            android:text="Notas:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/notasCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania8"
+            android:layout_marginLeft="60dp"
+            android:text="Notas"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/compania9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/notasCompania"
+            android:text="Servicio Suspendido:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/servicioSuspendidoCompania"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60sp"
+            android:layout_below="@+id/compania9"
+            android:text="Estado Servicio."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/compania10"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30sp"
+            android:layout_below="@+id/servicioSuspendidoCompania"
+            android:text="Notas Servicio Suspendido:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/notasSuspencionCompania"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compania10"
+            android:layout_marginLeft="60sp"
+            android:text="Notas Suspención"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+
     </RelativeLayout>
 
 </ScrollView>

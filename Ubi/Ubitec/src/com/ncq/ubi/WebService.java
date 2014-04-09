@@ -134,8 +134,8 @@ public class WebService {
 	public String cargarCompaniasInformacion(String name, String password,
 			String companie) {
 		crearSoap("cargarCompaniasInformacion"); // request LoginXML
-		request.addProperty("pUsuario", name); // add placa name to xml
-		request.addProperty("pClave", password); // add user name to xml
+		request.addProperty("pUsuario", name); // add user name to xml
+		request.addProperty("pClave", password); // add  name to xml
 		request.addProperty("pCompania", companie); // add user name to xml
 		String resultado = conexion_aux();
 		return resultado;
