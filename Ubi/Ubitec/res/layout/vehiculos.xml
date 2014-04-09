@@ -1,36 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    
-        android:background="@drawable/fondohome" >
+    android:background="@drawable/fondohome" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+   <LinearLayout
+        android:id="@+id/tabAutos"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:dividerHeight="2dp"
+        android:textColor="#424242"
+              >
+        <EditText
+            android:id="@+id/textoBusquedaAutos"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:hint="Busqueda de Autos" />
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp"
-            android:src="@drawable/icono" />
+        <TabHost
+            android:id="@+id/tabhostAutos"
+            android:layout_width="fill_parent"
+            android:layout_below="@+id/textoBusquedaComp"
+            android:layout_height="fill_parent" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView1"
-            android:layout_centerHorizontal="true"
-            android:text="Informacion de Vehiculos"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="25dp" 
-            android:textColor="#FFFFFF"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
 
-</LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/tab1AutosPlaca"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
+
+                        <ListView
+                            android:id="@+id/listAutosPlaca"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab2AutosDescripcion"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
+
+                        <ListView
+                            android:id="@+id/listAutosDescrip"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+    </LinearLayout>
+</RelativeLayout>
