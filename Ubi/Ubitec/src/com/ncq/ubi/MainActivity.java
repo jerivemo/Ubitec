@@ -53,6 +53,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -74,11 +75,11 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	NavigationAdapter NavAdapter, NavAdapter2;
-	ArrayList<String> listNombComp;
+	ArrayList<String> listNombComp= new ArrayList<String> ();
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -174,13 +175,14 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 		EditText edtBusquedaComp = (EditText) NavDrawerLayout
 				.findViewById(R.id.textoBusquedaComp);
-		
+
 		edtBusquedaComp.addTextChangedListener(filtroCompañias);
-		
+		setLista();
 		// Cuando la aplicacion cargue por defecto mostrar la opcion Home
 		MostrarFragment(1);
 
 	}
+
 	int positionVentana;
 
 	/*
@@ -190,13 +192,22 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	private void MostrarFragment(int position) {
 		// update the main content by replacing fragments
 		Fragment fragment = null;
-		positionVentana=position;
+		// Fragment
+		// positionVentana=position;
 		switch (position) {
 		case 1:
 			fragment = new HomeFragment();
 			break;
 		case 2:
-			fragment= new vehiculos();
+			// ListView listaAutos = (ListView)
+			// findViewById(R.id.listAutosPlaca);
+			// ArrayAdapter<String> adapter = new
+			// ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,
+			// listNombComp);
+			// listaAutos.setAdapter(adapter);
+			fragment = new vehiculos();
+
+			// cargarAutos();
 			break;
 		case 3:
 			break;
@@ -235,8 +246,6 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 		}
 	}
 
-
-	
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
@@ -289,17 +298,24 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 				Context.MODE_PRIVATE);
 		String usuario = prefe.getString("usuario", "");
 		String clave = prefe.getString("clave", "");
-		ArrayList<String> listComp;
-		if (tipo == 0) {
-			// Filtro po Placa
-			listComp = filtroCompania(usuario, clave, datos, "");
-			CargarCompañias(listComp, 0);
-		} else if (tipo == 1) {
-			// Filtro po Descripcion
-			listComp = filtroCompania(usuario, clave, "", datos);
-			CargarCompañias(listComp, 1);
-		}
 
+		if (datos == "") {
+			setLista();
+		} else {
+			ArrayList<String> listComp;
+			if (tipo == 0) {
+				// Filtro po Placa
+				setLista();
+				listComp = filtroCompania(usuario, clave, datos, "");
+				CargarCompañias(listComp, 0);
+
+			} else if (tipo == 1) {
+				// Filtro po Descripcion
+				setLista();
+				listComp = filtroCompania(usuario, clave, "", datos);
+				CargarCompañias(listComp, 1);
+			}
+		}
 	}
 
 	public ArrayList<String> filtroCompania(String user, String pass,
@@ -404,10 +420,21 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 	 * Cargar Nombre de la compañia en listView para la selección
 	 */
 
-	ListView list;
 	InformacionComania informacionC = null;
-	public void CargarCompañias(final ArrayList<String> compañias, int tipo) {
 
+	public void setLista() {
+		ArrayList<String> companias = new ArrayList<String>();
+		ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, companias);
+		ListView list = (ListView) NavDrawerLayout.findViewById(R.id.listCompPlaca);
+		list.setAdapter(adaptador);
+		ListView list2 = (ListView) NavDrawerLayout.findViewById(R.id.listCompDescrip);
+		list2.setAdapter(adaptador);
+
+	}
+
+	public void CargarCompañias(ArrayList<String> compañias, int tipo) {
+		ListView list;
 		ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, compañias);
 		if (tipo == 0) {
@@ -419,14 +446,21 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
-		   				
+					setLista();
+
+					SharedPreferences preferencias = getSharedPreferences(
+							"datosCompania", Context.MODE_PRIVATE);
+					Editor editor = preferencias.edit();
+					editor.putString("codigo_compania", listNombComp.get(arg2));
+					editor.commit();
+
 					cargarInfoCompania(listNombComp.get(arg2));
-					informacionC= new InformacionComania();
-					
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
-								.replace(R.id.content_frame, informacionC).commit();
-					
+					informacionC = new InformacionComania();
+
+					FragmentManager fragmentManager = getFragmentManager();
+					fragmentManager.beginTransaction()
+							.replace(R.id.content_frame, informacionC).commit();
+
 				}
 			});
 
@@ -440,13 +474,20 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
-					cargarInfoCompania(listNombComp.get(arg2));
 
-					informacionC= new InformacionComania();
-					
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
-								.replace(R.id.content_frame, informacionC).commit();
+					SharedPreferences preferencias = getSharedPreferences(
+							"datosCompania", Context.MODE_PRIVATE);
+					Editor editor = preferencias.edit();
+					editor.putString("codigo_compania", listNombComp.get(arg2));
+					editor.commit();
+
+					cargarInfoCompania(listNombComp.get(arg2));
+					setLista();
+					informacionC = new InformacionComania();
+
+					FragmentManager fragmentManager = getFragmentManager();
+					fragmentManager.beginTransaction()
+							.replace(R.id.content_frame, informacionC).commit();
 				}
 			});
 
@@ -454,101 +495,87 @@ public class MainActivity extends Activity implements OnQueryTextListener {
 
 	}
 
-	
-	
-	
-	
-	public void cargarInfoCompania(String compa)
-	{
-		
+	public void cargarInfoCompania(String compa) {
+
 		SharedPreferences prefe = getSharedPreferences("datosUsuario",
 				Context.MODE_PRIVATE);
 		String usuario = prefe.getString("usuario", "");
 		String clave = prefe.getString("clave", "");
-		
-	    	Boolean flag = cargarCompaniasInformacion2(usuario,clave,compa);
-    	if (flag == true)
-    	{
-    	}
-    }
 
-private boolean cargarCompaniasInformacion2(String user, String pass, String comp)
-   	{
-   		WebService ncqtrack = new WebService();
-           
-             
-             String resultado = ncqtrack.cargarCompaniasInformacion(user,pass,comp); // connection result  
-       
-   		if (resultado.equals("No hubo conexi—n")) {
-   			Toast.makeText(getApplicationContext(), "No hubo conexión", 
-   					Toast.LENGTH_LONG).show(); // Connection failed
-   					return false;
-   		}
-   		else {
+		Boolean flag = cargarCompaniasInformacion2(usuario, clave, compa);
+		if (flag == true) {
+		}
+	}
 
-	    	
-   						
-   			boolean validate = false;
-   			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-   			dbf.setValidating(validate);
-   			dbf.setNamespaceAware(true);
-   			dbf.setIgnoringElementContentWhitespace(true);
-   			Document document = null;
-   			try {
-   				
-   				// delete garbage in the web service response like "[" or "]" 
-   				if( (resultado.substring(0,1)).equals("[") && 
-   						resultado.substring(resultado.length()-1,resultado.length()).equals("]")){
-   					if(resultado.substring(resultado.length()-12, resultado.length()).equals(", anyType{}]")){
-   						resultado=resultado.substring(1,resultado.length()-12);
-   					} else{
-   						resultado=resultado.substring(1,resultado.length()-1);
-   					}
-   				}
-   											
-   				DocumentBuilder builder = dbf.newDocumentBuilder();
-   				document = builder.parse(new InputSource(
-   				new StringReader(resultado)));//leer XML
-   				NodeList nodeList = document.getElementsByTagName("Respuesta");
-   				
-   				Toast.makeText(getApplicationContext(),
-							resultado,
+	private boolean cargarCompaniasInformacion2(String user, String pass,
+			String comp) {
+		WebService ncqtrack = new WebService();
+
+		String resultado = ncqtrack
+				.cargarCompaniasInformacion(user, pass, comp); // connection
+																// result
+
+		if (resultado.equals("No hubo conexi—n")) {
+			Toast.makeText(getApplicationContext(), "No hubo conexión",
+					Toast.LENGTH_LONG).show(); // Connection failed
+			return false;
+		} else {
+
+			boolean validate = false;
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setValidating(validate);
+			dbf.setNamespaceAware(true);
+			dbf.setIgnoringElementContentWhitespace(true);
+			Document document = null;
+			try {
+
+				// delete garbage in the web service response like "[" or "]"
+				if ((resultado.substring(0, 1)).equals("[")
+						&& resultado.substring(resultado.length() - 1,
+								resultado.length()).equals("]")) {
+					if (resultado.substring(resultado.length() - 12,
+							resultado.length()).equals(", anyType{}]")) {
+						resultado = resultado.substring(1,
+								resultado.length() - 12);
+					} else {
+						resultado = resultado.substring(1,
+								resultado.length() - 1);
+					}
+				}
+
+				DocumentBuilder builder = dbf.newDocumentBuilder();
+				document = builder.parse(new InputSource(new StringReader(
+						resultado)));// leer XML
+				NodeList nodeList = document.getElementsByTagName("Respuesta");
+
+				Toast.makeText(getApplicationContext(), resultado,
+						Toast.LENGTH_LONG).show();
+				String respuesta = nodeList.item(0).getTextContent();
+				if (respuesta.compareTo("N") == 0) {
+
+					return true;
+
+				} else if (respuesta.compareTo("S") == 0) {
+					nodeList = document.getElementsByTagName("Detalle");
+					Toast.makeText(getApplicationContext(),
+							nodeList.item(0).getTextContent(),
 							Toast.LENGTH_LONG).show();
-   				String respuesta = nodeList.item(0).getTextContent();
-   				if (respuesta.compareTo("N")==0) {
-   					
-   					return true;
-   					
-   				}else if (respuesta.compareTo("S")==0)
-   				{
-   					nodeList = document.getElementsByTagName("Detalle");
-   					Toast.makeText(getApplicationContext(),
-   							nodeList.item(0).getTextContent(),
-   							Toast.LENGTH_LONG).show();
-   					return false;
-   				}
-   						
-   			} catch (Exception e) {
-   				Toast.makeText(getApplicationContext(), e.toString(),
-   						Toast.LENGTH_LONG).show();
-   				return false;
-   				
-   			}
-   		
-   		}
-   		return false;
-   	}
+					return false;
+				}
+
+			} catch (Exception e) {
+				Toast.makeText(getApplicationContext(), e.toString(),
+						Toast.LENGTH_LONG).show();
+				return false;
+
+			}
+
+		}
+		return false;
+	}
+
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	TextWatcher filtroCompañias = new TextWatcher() {
 
 		@Override
@@ -557,14 +584,11 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
 			EditText texto = (EditText) NavDrawerLayout
 					.findViewById(R.id.textoBusquedaComp);
 			TabHost tabs = (TabHost) findViewById(android.R.id.tabhost);
-			if(positionVentana==1){
-			ObtenerCompanias(texto.getText().toString(), tabs.getCurrentTab());
-			}
-			if(positionVentana==2)
-			{
-				
-			}
 			
+				ObtenerCompanias(texto.getText().toString(),
+						tabs.getCurrentTab());
+			
+
 		}
 
 		@Override
@@ -586,7 +610,7 @@ private boolean cargarCompaniasInformacion2(String user, String pass, String com
 		@Override
 		public void onTabChanged(String tabId) {
 			EditText texto = (EditText) NavDrawerLayout
-					.findViewById(R.id.textoBusquedaComp); 
+					.findViewById(R.id.textoBusquedaComp);
 			TabHost tabs = (TabHost) findViewById(android.R.id.tabhost);
 			ObtenerCompanias(texto.getText().toString(), tabs.getCurrentTab());
 
